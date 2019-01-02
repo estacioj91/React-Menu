@@ -1,0 +1,13 @@
+Sibling Elements- We can wrap elements by wrapping them in React.Fragment tags.
+
+This - All components that come with React are bound by default, our made components aren't. We must bind our own methods as well. We can solve issue by using this.goTOsstore = this.goTostore.bind(this) in the constructor, Another way is using the syntax goTostore = event => {} this treats the method as a property and binds this for us.
+
+Constructor - must call super() before anything is done.
+
+State - Any function that updates state must live where the state lives
+
+Component Did Mount - Checks if component loaded properly
+
+Component Will Unmount- cleans up after ourselves to avoid future memory leaks
+
+editable state - React does not like when we put state in a editable area without an onchange handler
