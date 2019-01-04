@@ -8,8 +8,14 @@ import base from "../base";
 import PropTypes from "prop-types";
 
 class App extends React.Component {
+	constructor(props) {
+		super(props);
+		this.storeName = this.props.location.state.storeName;
+		this.uid = this.props.location.state.uid;
+		this.owner = this.props.location.state.owner;
+		this.fishes = this.props.location.state.fishes;
+	}
 	state = {
-		fishes: {},
 		order: {}
 	};
 
@@ -35,35 +41,11 @@ class App extends React.Component {
 	}
 
 	componentDidUpdate() {
-		console.log(this.state.order);
 		localStorage.setItem(
 			this.props.match.params.storeId,
 			JSON.stringify(this.state.order)
 		);
 	}
-
-	addFish = fish => {
-		console.log("adding a fish");
-		const fishes = { ...this.state.fishes };
-		fishes[`fish${Date.now()}`] = fish;
-		this.setState({
-			fishes
-		});
-	};
-	updateFish = (key, updateFish) => {
-		const fishes = { ...this.state.fishes };
-		fishes[key] = updateFish;
-		this.setState({ fishes });
-	};
-	deleteFish = key => {
-		const fishes = { ...this.state.fishes };
-		fishes[key] = null;
-		this.setState({ fishes });
-	};
-
-	loadSampleFishes = () => {
-		this.setState({ fishes: sampleFishes });
-	};
 
 	addToOrder = key => {
 		const order = { ...this.state.order };
@@ -75,35 +57,57 @@ class App extends React.Component {
 		delete order[key];
 		this.setState({ order });
 	};
+	returnToOptions = () => {
+		console.log("returning");
+		console.log("history", this.props.history);
+		this.props.history.goBack(`/${this.storeName}`);
+	};
 	render() {
+		const back = <button onClick={this.returnToOptions}>Back</button>;
 		return (
 			<div className="catch-of-the-day">
 				<div className="menu">
+					{back}
 					<Header tagline="FRESH SEAFOOD MARKET" />
 					<ul className="fishes">
-						{Object.keys(this.state.fishes).map(key => (
+						{Object.keys(this.fishes).map(key => (
 							<Fish
 								key={key}
 								index={key}
-								details={this.state.fishes[key]}
+								details={this.fishes[key]}
 								addToOrder={this.addToOrder}
 							/>
 						))}
 					</ul>
 				</div>
 				<Order
-					fishes={this.state.fishes}
+					fishes={this.fishes}
 					order={this.state.order}
 					removeFromOrder={this.removeFromOrder}
 				/>
-				<Inventory
-					storeId={this.props.match.params.storeId}
+				{/* <Inventory
+					returnToMenu={this.returnToMenu}
+					loginInfo={this.loginInfo}
+					storeId={this.storeName}
 					updateFish={this.updateFish}
 					fishes={this.state.fishes}
 					addFish={this.addFish}
 					loadSampleFishes={this.loadSampleFishes}
 					deleteFish={this.deleteFish}
-				/>
+				/> */}
+				<div className="menu">
+					<Header tagline="FRESH SEAFOOD MARKET" />
+					<ul className="fishes">
+						{Object.keys(this.fishes).map(key => (
+							<Fish
+								key={key}
+								index={key}
+								details={this.fishes[key]}
+								addToOrder={this.addToOrder}
+							/>
+						))}
+					</ul>
+				</div>
 			</div>
 		);
 	}

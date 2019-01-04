@@ -11,3 +11,6 @@ Component Did Mount - Checks if component loaded properly
 Component Will Unmount- cleans up after ourselves to avoid future memory leaks
 
 editable state - React does not like when we put state in a editable area without an onchange handler
+
+Using location.state
+location.state is a convenient way to pass state between components when you are navigating. It has one major downside, however, which is that the state only exists when navigating within your application. If a user follows a link to your website, there will be no state attached to the location.
