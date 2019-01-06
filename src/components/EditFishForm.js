@@ -21,6 +21,9 @@ class EditFishForm extends React.Component {
 	};
 
 	render() {
+		// if (this.props.fish == null) {
+		// 	return null;
+		// }
 		return (
 			<div className="fish-edit">
 				<input

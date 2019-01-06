@@ -26,6 +26,7 @@ class App extends React.Component {
 	componentDidMount() {
 		const { params } = this.props.match;
 		const localStorageRef = localStorage.getItem(params.storeId);
+		console.log(localStorageRef);
 		if (localStorageRef) {
 			this.setState({ order: JSON.parse(localStorageRef) });
 		}
@@ -33,6 +34,10 @@ class App extends React.Component {
 			context: this,
 			state: "fishes"
 		});
+		const localStorageRefGuest = localStorage.getItem("guest");
+		if (localStorageRefGuest) {
+			this.fishes = JSON.parse(localStorageRefGuest);
+		}
 	}
 
 	componentWillUnmount() {

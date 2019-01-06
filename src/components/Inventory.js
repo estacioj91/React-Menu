@@ -6,6 +6,7 @@ import firebase from "firebase";
 import PropTypes from "prop-types";
 import base, { firebaseApp } from "../base";
 import sampleFishes from "../sample-fishes";
+import { parse } from "url";
 class Inventory extends React.Component {
 	constructor(props) {
 		super(props);
@@ -14,13 +15,14 @@ class Inventory extends React.Component {
 		this.uid = this.props.location.state.uid;
 		this.owner = this.props.location.state.owner;
 		this.fishes = this.props.location.state.fishes;
+		console.log("constructor inventory", this.props.location);
+		this.state = {
+			uid: this.uid,
+			owner: this.owner,
+			fishes: this.fishes,
+			cuts: {}
+		};
 	}
-	state = {
-		uid: this.uid,
-		owner: this.owner,
-		fishes: {},
-		cuts: {}
-	};
 
 	// static propTypes = {
 	// 	updateFish: PropTypes.func,
@@ -46,10 +48,17 @@ class Inventory extends React.Component {
 		this.setState({ fishes });
 	};
 	deleteFish = key => {
+		console.log("deleting");
 		const fishes = { ...this.state.fishes };
 		fishes[key] = null;
 		this.setState({ fishes });
 		console.log(this.state.fishes);
+		const localStorageRef = localStorage.getItem("guest");
+		console.log("local stor", localStorageRef);
+		if (localStorageRef) {
+			delete fishes[key];
+			localStorage.setItem("guest", JSON.stringify(fishes));
+		}
 	};
 	logout = async () => {
 		console.log("logging out ");
@@ -65,6 +74,17 @@ class Inventory extends React.Component {
 		console.log("history", this.props.history);
 		this.props.history.goBack(`/${this.storeName}`);
 	};
+	componentDidUpdate() {
+		console.log("updating loadfishes", this.state.fishes);
+		const localStorageRef = localStorage.getItem("guest");
+		if (localStorageRef) {
+			console.log(this.state);
+			const fishesObj = JSON.stringify(this.state.fishes);
+			console.log("fishes obj", fishesObj);
+			localStorage.setItem("guest", JSON.stringify(this.state.fishes));
+		}
+		console.log(localStorageRef);
+	}
 	componentDidMount() {
 		if (this.uid !== "default") {
 			this.ref = base.syncState(`${this.storeName}/fishes`, {
@@ -72,11 +92,15 @@ class Inventory extends React.Component {
 				state: "fishes"
 			});
 		} else {
-			const localStorageRef = localStorage.getItem("default");
+			const localStorageRef = localStorage.getItem("guest");
+			console.log("did mount", localStorageRef);
 			if (localStorageRef) {
-				console.log("inventory mount");
+				console.log("inventory parse");
+				this.setState({ fishes: JSON.parse(localStorageRef) });
 			}
+			console.log(this.state.fishes);
 		}
+		console.log("mount fishes", this.state.fishes);
 	}
 	render() {
 		console.log(this.fishes);

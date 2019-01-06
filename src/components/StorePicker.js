@@ -47,7 +47,12 @@ class StorePicker extends React.Component {
 				state: "fishes"
 			});
 		} else {
-			localStorage.setItem("default", {});
+			const localStorageRef = localStorage.getItem("guest");
+			if (localStorageRef) {
+				console.log("in store picker checking if local storage exits");
+			} else {
+				localStorage.setItem("guest", JSON.stringify(this.state.fishes));
+			}
 		}
 	}
 	logout = async () => {
