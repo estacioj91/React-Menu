@@ -14,6 +14,7 @@ class App extends React.Component {
 		this.uid = this.props.location.state.uid;
 		this.owner = this.props.location.state.owner;
 		this.fishes = this.props.location.state.fishes;
+		this.cuts = this.props.location.state.cuts;
 	}
 	state = {
 		order: {}
@@ -26,7 +27,7 @@ class App extends React.Component {
 	componentDidMount() {
 		const { params } = this.props.match;
 		const localStorageRef = localStorage.getItem(params.storeId);
-		console.log(localStorageRef);
+
 		if (localStorageRef) {
 			this.setState({ order: JSON.parse(localStorageRef) });
 		}
@@ -34,9 +35,17 @@ class App extends React.Component {
 			context: this,
 			state: "fishes"
 		});
-		const localStorageRefGuest = localStorage.getItem("guest");
+		this.ref = base.syncState(`${params.storeId}/cuts`, {
+			context: this,
+			state: "cuts"
+		});
+		const localStorageRefGuest = localStorage.getItem("guest-fishes");
 		if (localStorageRefGuest) {
 			this.fishes = JSON.parse(localStorageRefGuest);
+		}
+		const localStorageRefGuestCuts = localStorage.getItem("guest-cuts");
+		if (localStorageRefGuestCuts) {
+			this.cuts = JSON.parse(localStorageRefGuestCuts);
 		}
 	}
 
@@ -63,8 +72,6 @@ class App extends React.Component {
 		this.setState({ order });
 	};
 	returnToOptions = () => {
-		console.log("returning");
-		console.log("history", this.props.history);
 		this.props.history.goBack(`/${this.storeName}`);
 	};
 	render() {
@@ -73,7 +80,7 @@ class App extends React.Component {
 			<div className="catch-of-the-day">
 				<div className="menu">
 					{back}
-					<Header tagline="FRESH SEAFOOD MARKET" />
+					<Header name="Catch" tagline="FRESH SEAFOOD MARKET" />
 					<ul className="fishes">
 						{Object.keys(this.fishes).map(key => (
 							<Fish
@@ -87,6 +94,7 @@ class App extends React.Component {
 				</div>
 				<Order
 					fishes={this.fishes}
+					cuts={this.cuts}
 					order={this.state.order}
 					removeFromOrder={this.removeFromOrder}
 				/>
@@ -101,13 +109,13 @@ class App extends React.Component {
 					deleteFish={this.deleteFish}
 				/> */}
 				<div className="menu">
-					<Header tagline="FRESH SEAFOOD MARKET" />
+					<Header name="Steak" tagline="FRESH Steak MARKET" />
 					<ul className="fishes">
-						{Object.keys(this.fishes).map(key => (
+						{Object.keys(this.cuts).map(key => (
 							<Fish
 								key={key}
 								index={key}
-								details={this.fishes[key]}
+								details={this.cuts[key]}
 								addToOrder={this.addToOrder}
 							/>
 						))}

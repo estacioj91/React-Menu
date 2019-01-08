@@ -6,7 +6,7 @@ class EditFishForm extends React.Component {
 			...this.props.fish,
 			[event.currentTarget.name]: event.currentTarget.value
 		};
-		this.props.updateFish(this.props.index, updatedFish);
+		this.props.updateItem(this.props.index, updatedFish);
 	};
 	static propTypes = {
 		fish: PropTypes.shape({
@@ -21,9 +21,6 @@ class EditFishForm extends React.Component {
 	};
 
 	render() {
-		// if (this.props.fish == null) {
-		// 	return null;
-		// }
 		return (
 			<div className="fish-edit">
 				<input
@@ -64,10 +61,10 @@ class EditFishForm extends React.Component {
 				/>
 				<button
 					onClick={() => {
-						this.props.deleteFish(this.props.index);
+						this.props.deleteItem(this.props.index);
 					}}
 				>
-					Remove Fish
+					Remove Item
 				</button>
 			</div>
 		);

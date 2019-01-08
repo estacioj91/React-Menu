@@ -8,7 +8,8 @@ class Home extends React.Component {
 		uid: null,
 		owner: null,
 		storeName: null,
-		fishes: {}
+		fishes: {},
+		cuts: {}
 	};
 	authHandler = async authData => {
 		var storeName = authData.additionalUserInfo.profile.name;
@@ -18,10 +19,10 @@ class Home extends React.Component {
 		});
 		//returns store from database
 		const store = await base.fetch(storeName, { context: this });
-		console.log("Home.js store fishes", store.fishes);
+
 		//load database fishes into state.
-		this.setState({ fishes: store.fishes });
-		console.log("home-authhandler-fishes", this.state.fishes);
+		this.setState({ fishes: store.fishes, cuts: store.cuts });
+
 		//if store has no owner, we set owner to uid returned
 		//from authData
 		if (!store.owner) {
@@ -35,14 +36,15 @@ class Home extends React.Component {
 		});
 		//push state data to storepicker.js with our
 		//store name in the url
-		console.log("home-authhandler-fishes-push", this.state.fishes);
+
 		this.props.history.push({
 			pathname: `/store/${storeName}`,
 			state: {
 				uid: this.state.uid,
 				owner: this.state.owner,
 				storeName: this.state.storeName,
-				fishes: this.state.fishes
+				fishes: this.state.fishes,
+				cuts: this.state.cuts
 			}
 		});
 	};
@@ -54,14 +56,12 @@ class Home extends React.Component {
 			.then(this.authHandler);
 	};
 	logout = async () => {
-		console.log("logging out ");
 		await firebase.auth().signOut();
 		this.setState({
 			uid: null
 		});
 	};
 	guestView = () => {
-		console.log("guest view");
 		this.props.history.push({
 			pathname: `/store/default`,
 			state: {
@@ -72,8 +72,6 @@ class Home extends React.Component {
 		});
 	};
 	componentDidMount() {
-		console.log("state", this.state);
-		console.log(base);
 		localStorage.clear();
 	}
 	componentWillUnmount() {

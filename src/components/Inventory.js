@@ -6,21 +6,23 @@ import firebase from "firebase";
 import PropTypes from "prop-types";
 import base, { firebaseApp } from "../base";
 import sampleFishes from "../sample-fishes";
+import sampleCuts from "../sample-cuts";
 import { parse } from "url";
 class Inventory extends React.Component {
 	constructor(props) {
 		super(props);
-		console.log("constuctor-invetory", this.props);
+
 		this.storeName = this.props.location.state.storeName;
 		this.uid = this.props.location.state.uid;
 		this.owner = this.props.location.state.owner;
 		this.fishes = this.props.location.state.fishes;
-		console.log("constructor inventory", this.props.location);
+		this.cuts = this.props.location.state.cuts;
+
 		this.state = {
 			uid: this.uid,
 			owner: this.owner,
 			fishes: this.fishes,
-			cuts: {}
+			cuts: this.cuts
 		};
 	}
 
@@ -33,9 +35,11 @@ class Inventory extends React.Component {
 	loadSampleFishes = () => {
 		this.setState({ fishes: sampleFishes });
 	};
+	loadSampleCuts = () => {
+		this.setState({ cuts: sampleCuts });
+	};
 
 	addFish = fish => {
-		console.log("adding a fish");
 		const fishes = { ...this.state.fishes };
 		fishes[`fish${Date.now()}`] = fish;
 		this.setState({
@@ -47,43 +51,61 @@ class Inventory extends React.Component {
 		fishes[key] = updateFish;
 		this.setState({ fishes });
 	};
+	updateCut = (key, updateCut) => {
+		const cuts = { ...this.state.cuts };
+		cuts[key] = updateCut;
+		this.setState({ cuts });
+	};
 	deleteFish = key => {
-		console.log("deleting");
 		const fishes = { ...this.state.fishes };
 		fishes[key] = null;
 		this.setState({ fishes });
-		console.log(this.state.fishes);
-		const localStorageRef = localStorage.getItem("guest");
-		console.log("local stor", localStorageRef);
+
+		const localStorageRef = localStorage.getItem("guest-fishes");
+
 		if (localStorageRef) {
 			delete fishes[key];
-			localStorage.setItem("guest", JSON.stringify(fishes));
+			localStorage.setItem("guest-fishes", JSON.stringify(fishes));
+		}
+	};
+	deleteCuts = key => {
+		const cuts = { ...this.state.cuts };
+		cuts[key] = null;
+		this.setState({ cuts });
+
+		const localStorageRef = localStorage.getItem("guest-cuts");
+
+		if (localStorageRef) {
+			delete cuts[key];
+			localStorage.setItem("guest-cuts", JSON.stringify(cuts));
 		}
 	};
 	logout = async () => {
-		console.log("logging out ");
 		await firebase.auth().signOut();
 		this.setState({
 			uid: null
 		});
-		console.log(this.props);
+
 		this.props.history.go(-2);
 	};
 	returnToOptions = async () => {
-		console.log("returning");
-		console.log("history", this.props.history);
 		this.props.history.goBack(`/${this.storeName}`);
 	};
 	componentDidUpdate() {
-		console.log("updating loadfishes", this.state.fishes);
-		const localStorageRef = localStorage.getItem("guest");
+		const localStorageRef = localStorage.getItem("guest-fishes");
 		if (localStorageRef) {
-			console.log(this.state);
 			const fishesObj = JSON.stringify(this.state.fishes);
-			console.log("fishes obj", fishesObj);
-			localStorage.setItem("guest", JSON.stringify(this.state.fishes));
+			localStorage.setItem(
+				"guest-fishes",
+				JSON.stringify(this.state.fishes)
+			);
 		}
-		console.log(localStorageRef);
+
+		const localStorageRefCuts = localStorage.getItem("guest-cuts");
+		if (localStorageRefCuts) {
+			const cutsObj = JSON.stringify(this.state.cuts);
+			localStorage.setItem("guest-cuts", JSON.stringify(this.state.cuts));
+		}
 	}
 	componentDidMount() {
 		if (this.uid !== "default") {
@@ -91,19 +113,25 @@ class Inventory extends React.Component {
 				context: this,
 				state: "fishes"
 			});
+			this.ref = base.syncState(`${this.storeName}/cuts`, {
+				context: this,
+				state: "cuts"
+			});
 		} else {
-			const localStorageRef = localStorage.getItem("guest");
-			console.log("did mount", localStorageRef);
+			const localStorageRef = localStorage.getItem("guest-fishes");
+
 			if (localStorageRef) {
-				console.log("inventory parse");
 				this.setState({ fishes: JSON.parse(localStorageRef) });
 			}
-			console.log(this.state.fishes);
+
+			const localStorageRefCuts = localStorage.getItem("guest-cuts");
+
+			if (localStorageRefCuts) {
+				this.setState({ cuts: JSON.parse(localStorageRefCuts) });
+			}
 		}
-		console.log("mount fishes", this.state.fishes);
 	}
 	render() {
-		console.log(this.fishes);
 		const logout = <button onClick={this.logout}>Log Out!</button>;
 		const back = <button onClick={this.returnToOptions}>Back</button>;
 		return (
@@ -111,14 +139,14 @@ class Inventory extends React.Component {
 				<div className="inventory">
 					<h2>Inventory</h2>
 					{back}
-					{logout}
+					{this.storeName === "default" ? "" : logout}
 					{Object.keys(this.state.fishes).map(key => (
 						<EditFishForm
-							updateFish={this.updateFish}
+							updateItem={this.updateFish}
 							key={key}
 							index={key}
 							fish={this.state.fishes[key]}
-							deleteFish={this.deleteFish}
+							deleteItem={this.deleteFish}
 						/>
 					))}
 					<AddFishForm addFish={this.addFish} />
@@ -128,19 +156,17 @@ class Inventory extends React.Component {
 				</div>
 				<div className="inventory">
 					<h2>Inventory</h2>
-					{Object.keys(this.state.fishes).map(key => (
+					{Object.keys(this.state.cuts).map(key => (
 						<EditFishForm
-							updateFish={this.updateFish}
+							updateItem={this.updateCut}
 							key={key}
 							index={key}
-							fish={this.state.fishes[key]}
-							deleteFish={this.deleteFish}
+							fish={this.state.cuts[key]}
+							deleteItem={this.deleteCuts}
 						/>
 					))}
 					<AddFishForm addFish={this.addFish} />
-					<button onClick={this.loadSampleFishes}>
-						Load Sample Fishes
-					</button>
+					<button onClick={this.loadSampleCuts}>Load Sample Steaks</button>
 				</div>
 			</div>
 		);

@@ -5,7 +5,7 @@ const Header = props => {
 		<React.Fragment>
 			<header className="top">
 				<h1>
-					Catch
+					{props.name}
 					<span className="ofThe">
 						<span className="of">Of</span>
 						<span className="the">The</span>

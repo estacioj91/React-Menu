@@ -11,7 +11,8 @@ class StorePicker extends React.Component {
 		this.owner = this.props.location.state.owner;
 	}
 	state = {
-		fishes: {}
+		fishes: {},
+		cuts: {}
 	};
 	//passes user info to next location, could be fixed
 	goToStore = event => {
@@ -21,7 +22,8 @@ class StorePicker extends React.Component {
 				uid: this.uid,
 				owner: this.owner,
 				storeName: this.storeName,
-				fishes: this.state.fishes
+				fishes: this.state.fishes,
+				cuts: this.state.cuts
 			}
 		});
 	};
@@ -33,6 +35,7 @@ class StorePicker extends React.Component {
 				uid: this.uid,
 				owner: this.owner,
 				fishes: this.state.fishes,
+				cuts: this.state.cuts,
 				storeName: this.storeName
 			}
 		});
@@ -46,17 +49,32 @@ class StorePicker extends React.Component {
 				context: this,
 				state: "fishes"
 			});
+			this.ref = base.syncState(`${this.storeName}/cuts`, {
+				context: this,
+				state: "cuts"
+			});
 		} else {
-			const localStorageRef = localStorage.getItem("guest");
+			const localStorageRef = localStorage.getItem("guest-fishes");
 			if (localStorageRef) {
-				console.log("in store picker checking if local storage exits");
 			} else {
-				localStorage.setItem("guest", JSON.stringify(this.state.fishes));
+				localStorage.setItem(
+					"guest-fishes",
+					JSON.stringify(this.state.fishes)
+				);
+				localStorage.setItem("guest-cuts", JSON.stringify(this.state.cuts));
+			}
+			const localStorageRefCuts = localStorage.getItem("guest-cuts");
+			if (localStorageRefCuts) {
+			} else {
+				localStorage.setItem(
+					"guest-cuts",
+					JSON.stringify(this.state.fishes)
+				);
+				localStorage.setItem("guest-cuts", JSON.stringify(this.state.cuts));
 			}
 		}
 	}
 	logout = async () => {
-		console.log("logging out ");
 		await firebase.auth().signOut();
 		this.setState({
 			uid: null
@@ -64,7 +82,11 @@ class StorePicker extends React.Component {
 		this.props.history.goBack("/");
 	};
 	render() {
-		const logout = <button onClick={this.logout}>Log Out!</button>;
+		const logout = (
+			<button onClick={this.logout}>
+				{this.storeName === "default" ? "back" : "Log Out!"}
+			</button>
+		);
 		return (
 			<div>
 				<div className="store-selector">
@@ -74,11 +96,12 @@ class StorePicker extends React.Component {
 						type="text"
 						required
 						placeholder="Store Name"
-						defaultValue={this.storeName}
+						defaultValue={
+							this.storeName === "default" ? "Guest" : this.storeName
+						}
 					/>
 					<button
 						onClick={() => {
-							console.log("menu clicked", this.props);
 							this.goToStore();
 						}}
 					>
@@ -87,7 +110,6 @@ class StorePicker extends React.Component {
 					{/*Sample comment*/}
 					<button
 						onClick={() => {
-							console.log("inventory clicked", this.props);
 							this.goToInventory();
 						}}
 					>

@@ -1,82 +1,54 @@
 // This is just some sample data so you don't have to think of your own!
 const cuts = {
 	cut1: {
-		name: "Pacific Halibut",
-		image: "/images/hali.jpg",
+		name: "Slow Roaster Prime Rib",
+		image: "/images/prime-rib.png",
 		desc:
-			"Everyone’s favorite white fish. We will cut it to the size you need and ship it.",
-		price: 1724,
+			"Seasoned with an herb crust, served with au jus and hand-carved to order. Choose either original roasted or wood-fire grilled.",
+		price: 2699,
 		status: "available"
 	},
 
 	cut2: {
-		name: "Lobster",
-		image: "/images/lobster.jpg",
+		name: "Bone-in Natural Cut Ribeye",
+		image: "/images/bone-in-ribeye.png",
 		desc:
-			"These tender, mouth-watering beauties are a fantastic hit at any dinner party.",
-		price: 3200,
+			"Bone-in and extra marbled for maximum tenderness. Seasoned and wood-fire grilled over oak.",
+		price: 3149,
 		status: "available"
 	},
 
 	cut3: {
-		name: "Sea Scallops",
-		image: "/images/scallops.jpg",
+		name: "Melbourne Porterhouse",
+		image: "/images/melbourne-porterhouse.png",
 		desc:
-			"Big, sweet and tender. True dry-pack scallops from the icey waters of Alaska. About 8-10 per pound",
-		price: 1684,
-		status: "unavailable"
+			"Porterhouse features a flavorful strip and filet tenderloin together. Seasoned with our special blend of herbs and spices then seared.",
+		price: 3149,
+		status: "available"
 	},
 
 	cut4: {
-		name: "Mahi Mahi",
-		image: "/images/mahi.jpg",
+		name: "Outback Center Cut Sirloin",
+		image: "/images/center-sirloin.png",
 		desc:
-			"Lean flesh with a mild, sweet flavor profile, moderately firm texture and large, moist flakes. ",
-		price: 1129,
+			"Center-cut for tenderness. Lean, hearty and full of flavor. Seasoned and seared. ",
+		price: 2179,
 		status: "available"
 	},
 
 	cut5: {
-		name: "King Crab",
-		image: "/images/crab.jpg",
-		desc:
-			"Crack these open and enjoy them plain or with one of our cocktail sauces",
-		price: 4234,
+		name: "Ayers Rock NY Strip",
+		image: "/images/ayers-ny-strip.png",
+		desc: "NY Strip full of rich flavor. Seasoned and seared to perfection.",
+		price: 2599,
 		status: "available"
 	},
 
 	cut6: {
-		name: "Atlantic Salmon",
-		image: "/images/salmon.jpg",
-		desc:
-			"This flaky, oily salmon is truly the king of the sea. Bake it, grill it, broil it...as good as it gets!",
-		price: 1453,
-		status: "available"
-	},
-
-	cut7: {
-		name: "Oysters",
-		image: "/images/oysters.jpg",
-		desc: "A soft plump oyster with a sweet salty flavor and a clean finish.",
-		price: 2543,
-		status: "available"
-	},
-
-	cut8: {
-		name: "Mussels",
-		image: "/images/mussels.jpg",
-		desc:
-			"The best mussels from the Pacific Northwest with a full-flavored and complex taste.",
-		price: 425,
-		status: "available"
-	},
-
-	cut9: {
-		name: "Jumbo Prawns",
-		image: "/images/prawns.jpg",
-		desc:
-			"With 21-25 two bite prawns in each pound, these sweet morsels are perfect for shish-kabobs.",
-		price: 2250,
+		name: "Victoria's Filet Migon",
+		image: "/images/filet-mignon.png",
+		desc: "The most tender and juicy thick cut seasoned and seared.!",
+		price: 2899,
 		status: "available"
 	}
 };

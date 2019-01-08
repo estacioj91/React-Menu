@@ -4,23 +4,27 @@ import { TransitionGroup, CSSTransition } from "react-transition-group";
 import PropTypes from "prop-types";
 
 class Order extends React.Component {
-	static propTypes = {
-		fishes: PropTypes.object,
-		order: PropTypes.object,
-		removeFromOrder: PropTypes.func
-	};
+	// static propTypes = {
+	// 	fishes: PropTypes.object,
+	// 	order: PropTypes.object,
+	// 	removeFromOrder: PropTypes.func
+	// };
+	componentDidMount() {}
 	renderOrder = key => {
-		const fish = this.props.fishes[key];
+		const fish = this.props.fishes[key] || {};
+		const cuts = this.props.cuts[key] || {};
 		const count = this.props.order[key];
 		const transitionOptions = {
 			classNames: "order",
 			key: key,
 			timeout: { enter: 500, exit: 500 }
 		};
+		//if (!fish) return null;
+		// if (!cuts) return null;
 
-		if (!fish) return null;
-
-		const isAvailable = fish && fish.status === "available";
+		const isAvailable =
+			(fish && fish.status === "available") ||
+			(cuts && cuts.status === "available");
 		if (!isAvailable) {
 			return (
 				<CSSTransition {...transitionOptions}>
@@ -41,8 +45,8 @@ class Order extends React.Component {
 								<span>{count}</span>
 							</CSSTransition>
 						</TransitionGroup>
-						lbs {fish.name}
-						{formatPrice(count * fish.price)}
+						{fish.name ? "lbs" : "-"} {fish.name || cuts.name}{" "}
+						{formatPrice(count * (fish.price || cuts.price))}
 						<button
 							onClick={() => {
 								this.props.removeFromOrder(key);
@@ -58,11 +62,14 @@ class Order extends React.Component {
 	render() {
 		const orderIds = Object.keys(this.props.order);
 		const total = orderIds.reduce((prevTotal, key) => {
-			const fish = this.props.fishes[key];
+			const fish = this.props.fishes[key] || {};
+			const cuts = this.props.cuts[key] || {};
 			const count = this.props.order[key];
-			const isAvailable = fish && fish.status === "available";
+			const isAvailable =
+				(fish && fish.status === "available") ||
+				(cuts && cuts.status === "available");
 			if (isAvailable) {
-				return prevTotal + count * fish.price;
+				return prevTotal + count * (fish.price || cuts.price);
 			}
 			return prevTotal;
 		}, 0);
